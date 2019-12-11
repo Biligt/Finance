@@ -9,7 +9,7 @@ var uiController = (function() {
     getInput: function() {
       return {
         type: document.querySelector(DOMstrings.inputType).value,
-        decription: document.querySelector(DOMstrings.inputDecsription).value,
+        description: document.querySelector(DOMstrings.inputDecsription).value,
         value: document.querySelector(DOMstrings.inputValue).value
       };
     },
@@ -32,7 +32,7 @@ var financeController = (function() {
   };
 
   var data = {
-    allItems: {
+    items: {
       inc: [],
       exp: []
     },
@@ -41,12 +41,37 @@ var financeController = (function() {
       exp: 0
     }
   };
+
+  return {
+    addItem: function(type, desc, val) {
+      var item, id;
+
+      if (data.items[type].length === 0) id = 1;
+      else {
+        id = data.items[type][data.items[type].length - 1].id + 1;
+      }
+      if (type === "inc") {
+        item = new Income(id, desc, val);
+      } else {
+        item = new Expense(id, desc, val);
+      }
+      data.items[type].push(item);
+    },
+
+    data: function() {
+      return data;
+    }
+  };
 })();
 
 // Програмын холбогч контроллер
 var appController = (function(uiCtrl, fnCtrl) {
   var ctrlAddItem = function() {
     // 1. Оруулах өгөгдлийг дэлгэцээс олж авна.
+    var input = uiCtrl.getInput();
+    console.log(input);
+
+    fnCtrl.addItem(input.type, input.description, input.value);
     // 2. Олж авсан өгөгдлүүдээ санхүүгийн контроллерт дамжуулж тэнд хадгална
     // 3. Олж авсан өгөгдлүүдээ вэб дээрээ тохирох хэсэгт харуулна
     // 4. Төсвийг тооцоолно
